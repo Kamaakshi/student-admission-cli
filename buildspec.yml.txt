@@ -1,0 +1,19 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo Installing dependencies
+      - gradle build --refresh-dependencies
+  build:
+    commands:
+      - echo Building the project
+      - gradle build
+  post_build:
+    commands:
+      - echo Running tests
+      - gradle test
+
+artifacts:
+  files:
+    - build/libs/*.jar
