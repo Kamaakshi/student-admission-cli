@@ -4,4 +4,4 @@ phases:
   build:
     commands:
       - echo Deploying .jar to S3...
-      - aws s3 cp build/libs/*.jar s3://student-admission-artifacts/
+      - aws s3 cp build/libs/*.jar s3://student-admission-artifacts/student-admission-cli.jar
