@@ -1,7 +1,11 @@
 version: 0.2
 
 phases:
+  install:
+    runtime-versions:
+      java: corretto11
   build:
     commands:
-      - echo Deploying .jar to S3...
-      - aws s3 cp build/libs/*.jar s3://student-admission-artifacts/student-admission-cli.jar
+      - echo Uploading JAR to S3...
+      - aws s3 cp student-admission-cli.jar s3://student-admission-deploy-bucket/student-admission-cli.jar
+
