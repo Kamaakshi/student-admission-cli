@@ -1,19 +1,25 @@
 version: 0.2
-
 phases:
   install:
+    runtime-versions:
+      java: corretto17
     commands:
-      - echo Installing dependencies
+      - echo Installing Gradle dependencies...
       - gradle build --refresh-dependencies
+
   build:
     commands:
-      - echo Building the project
+      - echo Building the project...
       - gradle build
+
   post_build:
     commands:
-      - echo Running tests
-      - gradle test
+      - echo Preparing deployment artifacts...
+      # Rename the built JAR to a fixed name (Elastic Beanstalk likes that)
+      - mkdir -p output
+      - cp build/libs/*.jar output/student-admission-cli.jar
+      - cp Procfile output/
 
 artifacts:
   files:
-    - build/libs/*.jar
+    - output/**/*
