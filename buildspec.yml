@@ -1,11 +1,21 @@
 version: 0.2
+
 phases:
   install:
     runtime-versions:
       java: corretto17
     commands:
-      - echo Installing Gradle dependencies...
+      - echo Installing dependencies...
       - gradle build --refresh-dependencies
+      - yum install -y jq
+
+  pre_build:
+    commands:
+      - echo Fetching secrets...
+      - |
+        SECRET_JSON=$(aws secretsmanager get-secret-value --secret-id StudentAdmissionSecrets --query SecretString --output text || echo "{}")
+        export DB_USER=$(echo $SECRET_JSON | jq -r .DB_USER)
+        export DB_PASS=$(echo $SECRET_JSON | jq -r .DB_PASS)
 
   build:
     commands:
@@ -15,7 +25,6 @@ phases:
   post_build:
     commands:
       - echo Preparing deployment artifacts...
-      # Rename the built JAR to a fixed name (Elastic Beanstalk likes that)
       - mkdir -p output
       - cp build/libs/*.jar output/student-admission-cli.jar
       - cp Procfile output/
