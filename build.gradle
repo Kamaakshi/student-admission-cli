@@ -1,17 +1,14 @@
-plugins {
+lugins {
     id 'application'
+    id 'java'
 }
 
 repositories {
     mavenCentral()
 }
 
-tasks.withType(JavaExec).configureEach {
-    standardInput = System.in
-}
-
 dependencies {
-    // Add dependencies here if needed
+    // Add dependencies here
 }
 
 application {
@@ -21,5 +18,17 @@ application {
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(17))
+    }
 }
+
+tasks.withType(JavaExec).configureEach {
+    standardInput = System.in
+}
+
+jar {
+    manifest {
+        attributes(
+            'Main-Class': application.mainClass.get()
+        )
+    }
 }
