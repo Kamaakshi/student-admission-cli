@@ -2,34 +2,18 @@ version: 0.2
 
 phases:
   install:
-    runtime-versions:
-      java: corretto17
     commands:
-      - echo Installing dependencies...
+      - echo Installing dependencies
       - gradle build --refresh-dependencies
-      - yum install -y jq
-
-  pre_build:
-    commands:
-      - echo Fetching dummy secrets (required by spec)
-      - |
-        SECRET_JSON=$(aws secretsmanager get-secret-value --secret-id StudentAdmissionSecrets --query SecretString --output text || echo "{}")
-        export DB_USER=$(echo $SECRET_JSON | jq -r .DB_USER)
-        export DB_PASS=$(echo $SECRET_JSON | jq -r .DB_PASS)
-
   build:
     commands:
-      - echo Building the project...
+      - echo Building the project
       - gradle build
-
   post_build:
     commands:
-      - echo Copying build artifacts...
-      - mkdir -p output
-      - cp build/libs/student-admission-cli.jar output/student-admission-cli.jar
-      - cp Procfile output/
+      - echo Running tests
+      - gradle test
 
 artifacts:
   files:
-    - output/student-admission-cli.jar
-    - output/Procfile
+    - build/libs/*.jar
